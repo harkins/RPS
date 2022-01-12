@@ -1,106 +1,111 @@
+const computerSelectionDisplay = document.getElementById("computerSelection");
+const playerSelectionDisplay = document.getElementById("playerSelection");
+const resultDisplay = document.getElementById("result");
+const possibleChoices = document.querySelectorAll("button");
+const rock = document.getElementById("rock");
+const paper = document.getElementById("paper");
+const scissors = document.getElementById("scissors");
+const computerScoreDisplay = document.getElementById("computerScore");
+const playerScoreDisplay = document.getElementById("playerScore");
+const messageDisplay = document.getElementById("message");
 let computerScore = 0;
 let playerScore = 0;
+let playerSelection;
+let computerSelection;
+let result;
+let message;
 
-let playerWinRound = "You won the round!";
-let computerWinRound = "You lost the round!";
-let draw = "It is a tie!";
-let playerWins = "You won the game! Congratulations!";
-let computerWins = "You lost the game! Sorry!";
+possibleChoices.forEach((possibleChoice) =>
+  possibleChoice.addEventListener("click", (e) => {
+    playerSelection = e.target.id;
+    playerSelectionDisplay.innerHTML = playerSelection;
+    computerPlay();
+    playRound();
+    game();
+  })
+);
+
+function computerPlay() {
+  let random = Math.random();
+  if (random <= 0.34) {
+    computerSelection = "rock";
+  } else if (random <= 0.67) {
+    computerSelection = "paper";
+  } else {
+    computerSelection = "scissors";
+  }
+  computerSelectionDisplay.innerHTML = computerSelection;
+}
+
+function playRound() {
+  if (playerSelection === computerSelection) {
+    result = "It is a tie!";
+  }
+  //checking rock
+  if (playerSelection === "rock" && computerSelection === "paper") {
+    computerScore++;
+    result = "You lost the round!";
+  }
+  if (playerSelection === "rock" && computerSelection === "scissors") {
+    playerScore++;
+    result = "You won the round!";
+  }
+  //checking paper
+  if (playerSelection === "paper" && computerSelection === "rock") {
+    playerScore++;
+    result = "You won the round!";
+  }
+  if (playerSelection === "paper" && computerSelection === "scissors") {
+    computerScore++;
+    result = "You lost the round!";
+  }
+  //checking scissors
+  if (playerSelection === "scissors" && computerSelection === "rock") {
+    computerScore++;
+    result = "You lost the round!";
+  }
+  if (playerSelection === "scissors" && computerSelection === "paper") {
+    playerScore++;
+    result = "You won the round!";
+  }
+  resultDisplay.innerHTML = result;
+  playerScoreDisplay.innerHTML = playerScore;
+  computerScoreDisplay.innerHTML = computerScore;
+}
 
 function game() {
   for (let roundsPlayed = 0; roundsPlayed < 1000; roundsPlayed++) {
-    playRound();
     if (playerScore > computerScore && playerScore === 5) {
-      console.log(playerWins);
-      //choice();
-      break;
+      message =
+        'You won the game! Congratulations! <br><br><button onclick="restartGame()">Click here to play again</button><br><br>';
+      endGame();
+    } else if (playerScore < computerScore && computerScore === 5) {
+      message =
+        'You lost the game! Sorry! <br><br><button onclick="restartGame()">Click here to play again</button><br><br>';
+      endGame();
+    } else {
+      message = " ";
     }
-    if (playerScore < computerScore && computerScore === 5) {
-      console.log(computerWins);
-      //choice();
-      break;
-    }
-    let playerSelection = prompt(
-      "Do you choose rock, paper, or scissors?"
-    ).toLowerCase();
-    const computerSelection = computerPlay();
-    function computerPlay() {
-      let random = Math.random();
-      if (random <= 0.34) {
-        return "rock";
-      } else if (random <= 0.67) {
-        return "paper";
-      } else {
-        return "scissors";
-      }
-    }
-
-    console.log("Your Choice: " + playerSelection);
-    console.log("Computer's Choice: " + computerSelection);
-    let result = playRound(playerSelection, computerSelection);
-    console.log(result);
-    const score =
-      "Player Score: " + playerScore + " Computer Score: " + computerScore;
-    console.log(score);
-  }
-
-  function playRound(playerSelection, computerSelection) {
-    if (playerSelection === computerSelection) {
-      return draw;
-    }
-    //checking rock
-    if (playerSelection === "rock" && computerSelection === "paper") {
-      computerScore++;
-      return computerWinRound;
-    }
-    if (playerSelection === "rock" && computerSelection === "scissors") {
-      playerScore++;
-      return playerWinRound;
-    }
-    //checking paper
-    if (playerSelection === "paper" && computerSelection === "rock") {
-      playerScore++;
-      return playerWinRound;
-    }
-    if (playerSelection === "paper" && computerSelection === "scissors") {
-      computerScore++;
-      return computerWinRound;
-    }
-    //checking scissors
-    if (playerSelection === "scissors" && computerSelection === "rock") {
-      computerScore++;
-      return computerWinRound;
-    }
-    if (playerSelection === "scissors" && computerSelection === "paper") {
-      playerScore++;
-      return playerWinRound;
-    }
+    messageDisplay.innerHTML = message;
   }
 }
 
-//let choice = prompt("Play again? Yes or no?").toLowerCase();
-//    }
-//    if ((choice = "yes")) {
-//      resetGame();
-//    }
-//    if ((choice = "no")) {
-//      return break;
-//    }
-//
-//function resetGame() {
-//  let computerScore = 0;
-//  let playerScore = 0;
-//  game();
-//}
+function endGame() {
+  rock.disabled = true;
+  paper.disabled = true;
+  scissors.disabled = true;
+}
 
-//let choice = prompt("Restart game, yes or no?").toLowerCase();
-//  if (choice === "yes") {
-//        return game();
-//if (choice === "no") {
-//        return alert("Thank you for playing!");
-//      }
-//        if (choice === "yes") {
-//        return game();
-//      }
-//      if (choice === "no") {
-//        return alert("Thank you for playing!");
+function restartGame() {
+  rock.disabled = false;
+  paper.disabled = false;
+  scissors.disabled = false;
+  playerScore = 0;
+  computerScore = 0;
+  playerScoreDisplay.innerHTML = playerScore;
+  computerScoreDisplay.innerHTML = computerScore;
+  playerSelectionDisplay.innerHTML = "";
+  computerSelectionDisplay.innerHTML = "";
+  resultDisplay.innerHTML = "";
+  messageDisplay.innerHTML = " ";
+}
